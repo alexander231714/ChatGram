@@ -65,6 +65,7 @@
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInputUsername"
                     android:layout_width="488dp"
                     android:layout_height="wrap_content"
                     android:hint="Nombre de usuario"
@@ -98,6 +99,7 @@
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInputEmail"
                     android:layout_width="488dp"
                     android:layout_height="wrap_content"
                     android:hint="Correo electronico"
@@ -131,6 +133,7 @@
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInputPassword"
                     android:layout_width="488dp"
                     android:layout_height="wrap_content"
                     android:hint="Contraseña"
@@ -164,6 +167,7 @@
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textInputConfirPassword"
                     android:layout_width="488dp"
                     android:layout_height="wrap_content"
                     android:hint="Confirmar contraseña"
@@ -176,6 +180,7 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/btnRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/skyblue"
@@ -185,5 +190,13 @@
         android:layout_marginHorizontal="20dp"
         android:layout_marginVertical="40dp"
         />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/circleImageBack"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_arrow_left"
+        app:civ_circle_background_color="@color/white"
+        android:layout_margin="15dp"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
