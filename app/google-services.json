@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "545129770403",
+    "project_id": "chatgram-4c6da",
+    "storage_bucket": "chatgram-4c6da.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:545129770403:android:826e9c8d483859952d7e16",
+        "android_client_info": {
+          "package_name": "com.loschidos.chatgram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "545129770403-v6elbhc8vcuddc98k84c1ph5cnmlfkc6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUojsLHEx-1GRc5mkPxoYd9qbrRiGPi_8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "545129770403-v6elbhc8vcuddc98k84c1ph5cnmlfkc6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
