@@ -145,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(intent);
                 }else {
+                    //cuando el usuario inicie sesion por primera vez con Google
                     String email = mAuth.getCurrentUser().getEmail();
                     Map<String, Object>map=new HashMap<>();
                     map.put("email", email);
@@ -152,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
-                                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                                Intent intent = new Intent(MainActivity.this, CompleteProfileActivity.class);
                                 startActivity(intent);
                             }else {
                                 Toast.makeText(MainActivity.this, "No se pudo almacenar la informacion del usuario", Toast.LENGTH_SHORT).show();
