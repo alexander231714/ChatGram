@@ -3,6 +3,7 @@ package com.loschidos.chatgram.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -22,12 +23,15 @@ import com.loschidos.chatgram.providers.UserProvider;
 import java.util.HashMap;
 import java.util.Map;
 
+import dmax.dialog.SpotsDialog;
+
 public class CompleteProfileActivity extends AppCompatActivity {
 
     TextInputEditText mTextInputUsername;
     Button mButtonRegister;
     AuthProvider mAuthProvider;
     UserProvider mUserProvider;
+    AlertDialog mDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +44,12 @@ public class CompleteProfileActivity extends AppCompatActivity {
         //instanciamos el objeto de autenticacion firebase
         mAuthProvider= new AuthProvider();
         mUserProvider= new UserProvider();
+
+        //inicializar variable alert
+        mDialog=new SpotsDialog.Builder()
+                .setContext(this)
+                .setMessage("Espere un momento")
+                .setCancelable(false).build();
 
         mButtonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,15 +78,21 @@ public class CompleteProfileActivity extends AppCompatActivity {
         User user = new User();
         user.setUsername(username);
         user.setId(id);
+        mDialog.show();
         /*si hubo un registro nuevo con google vamos a pedir que complete su inf
         * En este caso que ingrese su usuario(usamos update para que se sobre escriban los datos)*/
         /*Si la informacion se almaceno correctamente en la base de datos*/
-        mUserProvider.update(user).addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
-                Intent intent = new Intent(CompleteProfileActivity.this,HomeActivity.class);
-                startActivity(intent);
-            }else {
-                Toast.makeText(CompleteProfileActivity.this, "No se almaceno el usuario en la base de datos", Toast.LENGTH_SHORT).show();
+        mUserProvider.update(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                mDialog.dismiss();
+                if (task.isSuccessful()) {
+                    Intent intent = new Intent(CompleteProfileActivity.this, HomeActivity.class);
+                    startActivity(intent);
+                }
+                else {
+                    Toast.makeText(CompleteProfileActivity.this, "No se pudo almacenar el usuario en la base de datos", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

@@ -3,6 +3,8 @@ package com.loschidos.chatgram.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -25,14 +27,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import dmax.dialog.SpotsDialog;
 
 public class RegisterActivity2 extends AppCompatActivity {
 
     CircleImageView mCirculeImageViewBack;
     TextInputEditText mTextInputUsername, mTextInputEmail, mTextInputPassword, mTextInputConfirPassword;
     Button mButtonRegister;
-  AuthProvider mAuthProvider ;
+    AuthProvider mAuthProvider ;
     UserProvider mUserProviders;
+    AlertDialog mDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +55,12 @@ public class RegisterActivity2 extends AppCompatActivity {
         mAuthProvider = new AuthProvider();
         //instanciamos la BD
         mUserProviders= new UserProvider();
+
+        //inicializar variable alert
+        mDialog=new SpotsDialog.Builder()
+                .setContext(this)
+                .setMessage("Espere un momento")
+                .setCancelable(false).build();
 
         mButtonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,11 +108,12 @@ public class RegisterActivity2 extends AppCompatActivity {
 
     //Metodo para crear un usuario con parametros email, password
     //En caso de no querer almacenar sus datos se usa el esquema anterior
-    private void createUser(final String username,final String email, String password) {
-
+    private void createUser(final String username,final String email, final String password) {
+        mDialog.show();
         mAuthProvider.register(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+                mDialog.show();
                 //si la tarea fue exitosa
                 //crear el usuario en firebaseAuthentication
                 if(task.isSuccessful()){
@@ -114,15 +126,23 @@ public class RegisterActivity2 extends AppCompatActivity {
                     user.setEmail(email);
                     user.setUsername(username);
                     /*Si la informacion se almaceno correctamente en la base de datos*/
-                    mUserProviders.create(user).addOnCompleteListener(task1 -> {
-                        if(task1.isSuccessful()){
-                            Toast.makeText(RegisterActivity2.this, "El usuario se almaceno correctamente en la base de datos", Toast.LENGTH_SHORT).show();
-                        }else {
-                            Toast.makeText(RegisterActivity2.this, "No se almaceno el usuario en la base de datos", Toast.LENGTH_SHORT).show();
+                    mUserProviders.create(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            mDialog.dismiss();
+                            if (task.isSuccessful()) {
+                                Toast.makeText(RegisterActivity2.this, "El usuario se almaceno correctamente", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(RegisterActivity2.this, HomeActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                            }
+                            else {
+                                Toast.makeText(RegisterActivity2.this, "No se pudo almacenar el usuario en la base de datos", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
-                    //Toast.makeText(RegisterActivity2.this, "El usario se registro correctamente", Toast.LENGTH_SHORT).show();
                 }else {
+                    mDialog.dismiss();
                     Toast.makeText(RegisterActivity2.this, "No se pudo registrar el usuario", Toast.LENGTH_SHORT).show();
                 }
             }
