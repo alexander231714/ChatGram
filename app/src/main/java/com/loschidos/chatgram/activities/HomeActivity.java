@@ -1,8 +1,10 @@
-package com.loschidos.chatgram;
+package com.loschidos.chatgram.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.loschidos.chatgram.R;
 
 public class HomeActivity extends AppCompatActivity {
 
