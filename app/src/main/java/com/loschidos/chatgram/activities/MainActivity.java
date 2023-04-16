@@ -3,6 +3,7 @@ package com.loschidos.chatgram.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,6 +36,9 @@ import com.loschidos.chatgram.providers.UserProvider;
 import java.util.HashMap;
 import java.util.Map;
 
+import dmax.dialog.SpotsDialog;
+
+
 public class MainActivity extends AppCompatActivity {
 
     //Google Sign in
@@ -47,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     AuthProvider mAuthProvider;
     SignInButton mButtonGoogle;
     UserProvider mUserProvider;
+    AlertDialog mDialog;
 
 
     @Override
@@ -71,7 +76,13 @@ public class MainActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-       mUserProvider = new UserProvider();
+        mUserProvider = new UserProvider();
+
+        //inicializar variable alert
+        mDialog=new SpotsDialog.Builder()
+                .setContext(this)
+                .setMessage("Espere un momento")
+                .setCancelable(false).build();
 
         //Button para registrase con correo y contrase;a
         mButtonLogin.setOnClickListener(new View.OnClickListener() {
@@ -121,16 +132,26 @@ public class MainActivity extends AppCompatActivity {
 
     // [START auth_with_google]
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        mAuthProvider.googleLogin(acct).addOnCompleteListener(this,(task)-> {
-                        if (task.isSuccessful()) {
-                            String id = mAuthProvider.getUid();
-                            checkUserExist(id);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "No se puedo iniciar con Google", Toast.LENGTH_SHORT).show();
-                        }
-                });
+        //ejecutar el dialog show para mostrarlo
+        mDialog.show();
+        mAuthProvider.googleLogin(acct).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    String id = mAuthProvider.getUid();
+                    checkUserExist(id);
+                }
+                else {
+                    //deje de mostar el dialog(mensaje)
+                    mDialog.dismiss();
+                    // If sign in fails, display a message to the user.
+                    Log.w("ERROR", "signInWithCredential:failure", task.getException());
+                    Toast.makeText(MainActivity.this, "No se pudo iniciar sesion con google", Toast.LENGTH_SHORT).show();
+                }
+
+                // ...
+            }
+        });
     }
 
     //Verificamos si el usuario existe
@@ -139,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
+                    mDialog.dismiss();
                     Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(intent);
                 }
@@ -150,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
                     mUserProvider.create(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
+                            mDialog.dismiss();
                             if (task.isSuccessful()) {
                                 Intent intent = new Intent(MainActivity.this, CompleteProfileActivity.class);
                                 startActivity(intent);
@@ -176,13 +199,21 @@ public class MainActivity extends AppCompatActivity {
     private void login() {
         String email = mTextInpuTEmail.getText().toString();
         String password = mTextInputPassword.getText().toString();
-        mAuthProvider.login(email, password).addOnCompleteListener((task) ->{
-                if(task.isSuccessful()){
+        //mostrar dialog
+        mDialog.show();
+        mAuthProvider.login(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                //dismiss() oculta el mdialog que se esta mostrando al usuario
+                mDialog.dismiss();
+                if (task.isSuccessful()) {
                     Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(intent);
-                }else {
-                    Toast.makeText(MainActivity.this, "Email o contraseña que ingresaste es incorrecta", Toast.LENGTH_LONG).show();
                 }
+                else {
+                    Toast.makeText(MainActivity.this, "El email o la contraseña que ingresaste no son correctas", Toast.LENGTH_LONG).show();
+                }
+            }
         });
         Log.d("CAMPO", "email: "+email);
         Log.d("CAMPO", "password: "+password);
