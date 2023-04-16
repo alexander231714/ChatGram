@@ -15,6 +15,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.loschidos.chatgram.R;
+import com.loschidos.chatgram.models.User;
+import com.loschidos.chatgram.providers.AuthProvider;
+import com.loschidos.chatgram.providers.UserProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,8 +31,8 @@ public class RegisterActivity2 extends AppCompatActivity {
     CircleImageView mCirculeImageViewBack;
     TextInputEditText mTextInputUsername, mTextInputEmail, mTextInputPassword, mTextInputConfirPassword;
     Button mButtonRegister;
-    FirebaseAuth mAuth;
-    FirebaseFirestore mFireStore;
+  AuthProvider mAuthProvider ;
+    UserProvider mUserProviders;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,9 +47,9 @@ public class RegisterActivity2 extends AppCompatActivity {
         mCirculeImageViewBack=findViewById(R.id.circleImageBack);
 
         //instanciamos el objeto de autenticacion firebase
-        mAuth=FirebaseAuth.getInstance();
+        mAuthProvider = new AuthProvider();
         //instanciamos la BD
-        mFireStore=FirebaseFirestore.getInstance();
+        mUserProviders= new UserProvider();
 
         mButtonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,30 +96,29 @@ public class RegisterActivity2 extends AppCompatActivity {
     }
 
     //Metodo para crear un usuario con parametros email, password
+    //En caso de no querer almacenar sus datos se usa el esquema anterior
     private void createUser(final String username,final String email, String password) {
-        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+
+        mAuthProvider.register(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 //si la tarea fue exitosa
                 //crear el usuario en firebaseAuthentication
                 if(task.isSuccessful()){
                     //id nos de vuelve UID del usuario, que se crea en Authentication(firebase)
-                    String id = mAuth.getCurrentUser().getUid();
-
-                    Map<String, Object>map = new HashMap<>();
-                    map.put("username", username);
-                    map.put("email", email);
-                    /*si hubo un registro vamos a guardar esa informacion del usuario con su id en
-                     * la base de datos cloudFireStore*/
-                    mFireStore.collection("Users").document(id).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        /*Si la informacion se almaceno correctamente en la base de datos*/
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
-                                Toast.makeText(RegisterActivity2.this, "El usuario se almaceno correctamente en la base de datos", Toast.LENGTH_SHORT).show();
-                            }else {
-                                Toast.makeText(RegisterActivity2.this, "No se almaceno el usuario en la base de datos", Toast.LENGTH_SHORT).show();
-                            }
+                    String id = mAuthProvider.getUid();
+                    //Mejorando codigo Uso de Usersprovider para el manejo de insercion de datos en firebase
+                    // Creando propiedades de usuario
+                    User user = new User();
+                    user.setId(id);
+                    user.setEmail(email);
+                    user.setUsername(username);
+                    /*Si la informacion se almaceno correctamente en la base de datos*/
+                    mUserProviders.create(user).addOnCompleteListener(task1 -> {
+                        if(task1.isSuccessful()){
+                            Toast.makeText(RegisterActivity2.this, "El usuario se almaceno correctamente en la base de datos", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(RegisterActivity2.this, "No se almaceno el usuario en la base de datos", Toast.LENGTH_SHORT).show();
                         }
                     });
                     //Toast.makeText(RegisterActivity2.this, "El usario se registro correctamente", Toast.LENGTH_SHORT).show();

@@ -10,6 +10,10 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class AuthProvider {
 
         private FirebaseAuth mAuth;
+       //Metodo create user
+        public Task<AuthResult>register(String email, String password){
+            return mAuth.createUserWithEmailAndPassword(email, password);
+        }
 
         public AuthProvider(){
             mAuth = FirebaseAuth.getInstance();
