@@ -13,6 +13,8 @@
     <color name="primario1">#65dbff</color>
     <color name="primario2">#5fdaff</color>
     <color name="secundario">#4b4b4b</color>
+    <color name="Gray">#CCCBCB</color>
+    <color name="DarkBlue">#29297B</color>
 
 
 </resources>
