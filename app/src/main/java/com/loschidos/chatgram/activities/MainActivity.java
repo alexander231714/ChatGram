@@ -134,31 +134,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Verificamos si el usuario existe
-    private void checkUserExist(final String id){
-        mUserProvider.getUser(id).addOnSuccessListener((OnSuccessListener)(documentSnapshot) -> {
-            if(documentSnapshot.exists()) {
-                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                startActivity(intent);
-            }
-            else {
-                //cuando el usuario inicie sesion por primera vez con Google
-                String email = mAuthProvider.getEmail();
-                User user = new User();
-                user.setEmail(email);
-                user.setId(id);
-
-                mUserProvider.create(user).addOnCompleteListener((task) -> {
-                    if(task.isSuccessful()){
-                        Intent intent = new Intent(MainActivity.this, CompleteProfileActivity.class);
-                        startActivity(intent);
-                    }
-                    else {
-                        Toast.makeText(MainActivity.this, "No se pudo almacenar la informacion del usuario", Toast.LENGTH_SHORT).show();
-                    }
-                });
+    private void checkUserExist(final String id) {
+        mUserProvider.getUser(id).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                    startActivity(intent);
+                }
+                else {
+                    String email = mAuthProvider.getEmail();
+                    User user = new User();
+                    user.setEmail(email);
+                    user.setId(id);
+                    mUserProvider.create(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Intent intent = new Intent(MainActivity.this, CompleteProfileActivity.class);
+                                startActivity(intent);
+                            }
+                            else {
+                                Toast.makeText(MainActivity.this, "No se pudo almacenar la informacion del usuario", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
             }
         });
     }
+
     // [END auth_with_google]
 
     // [START signin]
