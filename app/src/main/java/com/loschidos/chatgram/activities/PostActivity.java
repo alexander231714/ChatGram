@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -22,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.car.ui.AlertDialogBuilder;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -58,12 +60,14 @@ public class PostActivity extends AppCompatActivity {
     ImageView imgMusica;
     ImageView imgPeli;
     TextView cate;
-
     String categoria = "";
     String mtitulo = "";
     String mdescripcion;
     AlertDialog mDialog;
+
+    AlertDialog.Builder mBuilderSelector;
     CircleImageView mCircleImageBack;
+    CharSequence options[];
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -128,6 +132,11 @@ public class PostActivity extends AppCompatActivity {
                 .setContext(this)
                 .setMessage("Espere un momento")
                 .setCancelable(false).build();
+
+        mBuilderSelector = new AlertDialog.Builder(this);
+        mBuilderSelector.setTitle("Selecciona una opcion");
+        options = new CharSequence[] {"Imagen de galeria", "Tomar foto"};
+
         //GUARDAR IMAGEN
         btnpublicar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -223,16 +232,40 @@ public class PostActivity extends AppCompatActivity {
         imgpost1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OpenGallery(GALLERY_REQUEST_CODE);
+                SelecOptionImage(GALLERY_REQUEST_CODE);
+
             }
         });
         imgpost2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OpenGallery(GALLERY_REQUEST_CODE_2);
+                SelecOptionImage(GALLERY_REQUEST_CODE_2);
             }
         });
     }
+
+    private void SelecOptionImage(final int requestCode) {
+        mBuilderSelector.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (i == 0) {
+                    OpenGallery(requestCode);
+                }
+                else if (i == 1){
+                    takePhoto();
+                }
+            }
+        });
+
+        mBuilderSelector.show();
+
+    }
+
+    private void takePhoto() {
+        Toast.makeText(this, "Selecciono tomar foto", Toast.LENGTH_SHORT).show();
+    }
+
+
 
 //Limpiar controles despues de almacenar datos
 

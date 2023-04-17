@@ -44,6 +44,7 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-storage'
     implementation 'id.zelory:compressor:2.1.1'
+    implementation 'com.android.car.ui:car-ui-lib:2.0.0'
     testImplementation 'junit:junit:4.13.2'
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
