@@ -15,17 +15,19 @@ public class ImageProvider {
     StorageReference mStorage;
 
     public ImageProvider() {
-        mStorage = FirebaseStorage.getInstance().getReference(); //Se hace referencia al almacenamiento de imagenes dentro de la BD
+
+        mStorage = FirebaseStorage.getInstance().getReference();
     }
-//LOGICA PARA GUARDAR IMAGENES
-    public UploadTask save(Context context, File File) {
-    byte[] imgbyte = CompressorBitmapImage.getImage(context, File.getPath(),500,500);
-    StorageReference storage = mStorage.child(new Date()+ ".jpg");
-    mStorage = storage;
-    UploadTask task = storage.putBytes(imgbyte);
-    return task;
+
+    public UploadTask save(Context context, File file) {
+        byte[] imageByte = CompressorBitmapImage.getImage(context, file.getPath(), 500, 500);
+        StorageReference storage = FirebaseStorage.getInstance().getReference().child(new Date() + ".jpg");
+        mStorage = storage;
+        UploadTask task = storage.putBytes(imageByte);
+        return task;
     }
- public StorageReference getStorage(){
+
+    public StorageReference getStorage() {
         return mStorage;
- }
+    }
 }
