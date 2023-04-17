@@ -42,7 +42,10 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:20.5.0'
     implementation 'com.github.d-max:spots-dialog:1.1@aar'
 
+    implementation 'com.google.firebase:firebase-storage'
+    implementation 'id.zelory:compressor:2.1.1'
     testImplementation 'junit:junit:4.13.2'
+
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
