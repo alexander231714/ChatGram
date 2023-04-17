@@ -21,8 +21,11 @@ public class ImageProvider {
     public UploadTask save(Context context, File File) {
     byte[] imgbyte = CompressorBitmapImage.getImage(context, File.getPath(),500,500);
     StorageReference storage = mStorage.child(new Date()+ ".jpg");
+    mStorage = storage;
     UploadTask task = storage.putBytes(imgbyte);
     return task;
     }
-
+ public StorageReference getStorage(){
+        return mStorage;
+ }
 }
