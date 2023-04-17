@@ -73,15 +73,26 @@ public class PostActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_post);
-        imgpost1 = findViewById(R.id.imgpost1); //Instancia de la variable imgpost1
-        imgpost2 = findViewById(R.id.imgpost2);
-        btnpublicar = findViewById(R.id.btnPost); //Instancia del boton para publicar imagen
 
         imgprov = new ImageProvider();
         mPostProvider = new PostProvider();
         Mauthprov = new AuthProvider();
+
+        mDialog = new SpotsDialog.Builder()
+                .setContext(this)
+                .setMessage("Espere un momento")
+                .setCancelable(false).build();
+
+        mBuilderSelector = new AlertDialog.Builder(this);
+        mBuilderSelector.setTitle("Selecciona una opcion");
+        options = new CharSequence[] {"Imagen de galeria", "Tomar foto"};
+
+
+        imgpost1 = findViewById(R.id.imgpost1); //Instancia de la variable imgpost1
+        imgpost2 = findViewById(R.id.imgpost2);
+        btnpublicar = findViewById(R.id.btnPost); //Instancia del boton para publicar imagen
+
 
         EtTitulo = findViewById(R.id.textInputPost); //INSTANCIANDO METODOS DE POST
         EtDesc = findViewById(R.id.textInputDesc);
@@ -96,6 +107,30 @@ public class PostActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+
+        //GUARDAR IMAGEN
+        btnpublicar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClickPost();
+            }
+        });
+
+
+        //Con este metodo cuando se toque el icono de la imagen se abrira la galeria
+        imgpost1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SelecOptionImage(GALLERY_REQUEST_CODE);
+
+            }
+        });
+        imgpost2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SelecOptionImage(GALLERY_REQUEST_CODE_2);
             }
         });
         imgdep.setOnClickListener(new View.OnClickListener() {
@@ -128,120 +163,6 @@ public class PostActivity extends AppCompatActivity {
                 cate.setText(categoria);
             }
         });
-        mDialog = new SpotsDialog.Builder()
-                .setContext(this)
-                .setMessage("Espere un momento")
-                .setCancelable(false).build();
-
-        mBuilderSelector = new AlertDialog.Builder(this);
-        mBuilderSelector.setTitle("Selecciona una opcion");
-        options = new CharSequence[] {"Imagen de galeria", "Tomar foto"};
-
-        //GUARDAR IMAGEN
-        btnpublicar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ClickPost();
-            }
-
-            private void ClickPost() {
-                String mtitulo = EtTitulo.getText().toString();
-                String mdescripcion = EtDesc.getText().toString();
-                if (!mtitulo.isEmpty() && !mdescripcion.isEmpty() && !categoria.isEmpty()) {
-                    if (imgFile != null) {
-                        SaveImg();
-                    } else {
-                        Toast.makeText(PostActivity.this, "Debes seleccionar una imagen", Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    Toast.makeText(PostActivity.this, "Completa los campos para publicar", Toast.LENGTH_LONG).show();
-                }
-            }
-
-
-            //METODO GUARDAR IMAGEN
-            private void SaveImg() {
-                mDialog.show();
-                imgprov.save(PostActivity.this, imgFile).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            imgprov.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    String url = uri.toString();
-
-                                    imgprov.save(PostActivity.this, imgFile2).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> taskimg2) {
-          if(taskimg2.isSuccessful()){
-              imgprov.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                  @Override
-                  public void onSuccess(Uri uri2) {
-                      String url2 = uri2.toString();
-                      Post post = new Post();
-                      post.setImg1(url);
-                      post.setImg2(url2);
-                      post.setTitulo(mtitulo);
-                      post.setDescripcion(mdescripcion);
-                      post.setCategoria(categoria);
-                      post.setIdUsuario(Mauthprov.getUid());
-                      mPostProvider.save(post).addOnCompleteListener(new OnCompleteListener<Void>() {
-                          @Override
-                          public void onComplete(@NonNull Task<Void> taskSave) {
-                              if (taskSave.isSuccessful()) {
-                                  clearForm();
-                                  Toast.makeText(PostActivity.this, "La Informacion se almaceno Correctamente", Toast.LENGTH_LONG).show();
-                              } else {
-                                  mDialog.dismiss();
-                                  Toast.makeText(PostActivity.this, "Hubo error al almacenar la Informacion", Toast.LENGTH_SHORT).show();
-                              }
-
-                          }
-
-                      });
-
-                  }
-
-              });
-
-          } else { mDialog.dismiss();
-              Toast.makeText(PostActivity.this, "Hubo error al almacenar la imagen 2", Toast.LENGTH_SHORT).show();
-          }
-
-                                        }
-
-                                    });
-                                }
-                            });
-
-                        }
-                        else {
-                            mDialog.dismiss();
-                            Toast.makeText(PostActivity.this, "Hubo error al almacenar la imagen", Toast.LENGTH_SHORT).show();
-                        }
-              }
-
-                });
-
-         }
-
-        });
-
-        //Con este metodo cuando se toque el icono de la imagen se abrira la galeria
-        imgpost1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SelecOptionImage(GALLERY_REQUEST_CODE);
-
-            }
-        });
-        imgpost2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SelecOptionImage(GALLERY_REQUEST_CODE_2);
-            }
-        });
     }
 
     private void SelecOptionImage(final int requestCode) {
@@ -265,6 +186,80 @@ public class PostActivity extends AppCompatActivity {
         Toast.makeText(this, "Selecciono tomar foto", Toast.LENGTH_SHORT).show();
     }
 
+    private void ClickPost() {
+        mtitulo = EtTitulo.getText().toString();
+        mdescripcion = EtDesc.getText().toString();
+        if (!mtitulo.isEmpty() && !mdescripcion.isEmpty() && !categoria.isEmpty()) {
+            if (imgFile != null) {
+                SaveImg();
+            } else {
+                Toast.makeText(PostActivity.this, "Debes seleccionar una imagen", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(PostActivity.this, "Completa los campos para publicar", Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    //METODO GUARDAR IMAGEN
+    private void SaveImg() {
+        mDialog.show();
+        imgprov.save(PostActivity.this, imgFile).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                if (task.isSuccessful()) {
+                    imgprov.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            final String url = uri.toString();
+
+                            imgprov.save(PostActivity.this, imgFile2).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> taskImage2) {
+                                    if (taskImage2.isSuccessful()) {
+                                        imgprov.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri2) {
+                                                String url2 = uri2.toString();
+                                                Post post = new Post();
+                                                post.setImg1(url);
+                                                post.setImg2(url2);
+                                                post.setTitulo(mtitulo);
+                                                post.setDescripcion(mdescripcion);
+                                                post.setCategoria(categoria);
+                                                post.setIdUsuario(Mauthprov.getUid());
+                                                mPostProvider.save(post).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> taskSave) {
+                                                        mDialog.dismiss();
+                                                        if (taskSave.isSuccessful()) {
+                                                            clearForm();
+                                                            Toast.makeText(PostActivity.this, "La informacion se almaceno correctamente", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                        else {
+                                                            Toast.makeText(PostActivity.this, "No se pudo almacenar la informacion", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                    else {
+                                        mDialog.dismiss();
+                                        Toast.makeText(PostActivity.this, "La imagen numero 2 no se pudo guardar", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+                else {
+                    mDialog.dismiss();
+                    Toast.makeText(PostActivity.this, "Hubo error al almacenar la imagen", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
 
 
 //Limpiar controles despues de almacenar datos
