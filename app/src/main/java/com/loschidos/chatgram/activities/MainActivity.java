@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     UserProvider mUserProvider;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,6 +166,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // [END auth_with_google]
+
+
+    // ver si la sesion del usuario existe
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(mAuthProvider.getUserSesion() != null){
+            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+    }
 
     // [START signin]
     /*dispara todo el proceso de autenticacion con google*/
