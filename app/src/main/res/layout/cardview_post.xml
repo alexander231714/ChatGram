@@ -16,25 +16,28 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:scaleType="centerCrop"
+            android:contentDescription="imgpost"
             />
+
         <TextView
             android:id="@+id/textViewTitlePostCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Titulo: "
-            android:paddingTop="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:textSize="20dp"
             android:maxLines="1"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:text="Titulo: "
             android:textColor="@color/DarkBlue"
-            />
+            android:textSize="20sp"
+            android:textStyle="bold" />
         <TextView
             android:id="@+id/textViewDescriptionPostcard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Descripcion: "
             android:layout_margin="10dp"
+            android:textSize="17sp"
             />
     </LinearLayout>
 

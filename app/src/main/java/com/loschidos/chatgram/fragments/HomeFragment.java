@@ -73,7 +73,7 @@ public class HomeFragment extends Fragment {
         return mView;
     }
 
-        @Override
+    @Override
     public void onStart() {
         super.onStart();
         Query query = mPostProvider.getAll();
@@ -86,7 +86,6 @@ public class HomeFragment extends Fragment {
         mRecyclerView.setAdapter(mPostsAdapter);
         mPostsAdapter.startListening();
     }
-
     @Override
     public void onStop() {
         super.onStop();

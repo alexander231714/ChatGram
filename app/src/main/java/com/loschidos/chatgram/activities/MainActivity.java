@@ -31,9 +31,11 @@ import com.loschidos.chatgram.R;
 import com.loschidos.chatgram.models.User;
 import com.loschidos.chatgram.providers.AuthProvider;
 import com.loschidos.chatgram.providers.UserProvider;
-
+import android.app.AlertDialog;
 import java.util.HashMap;
 import java.util.Map;
+
+import dmax.dialog.SpotsDialog;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     AuthProvider mAuthProvider;
     SignInButton mButtonGoogle;
     UserProvider mUserProvider;
+    AlertDialog mDialog;
 
 
 
@@ -55,12 +58,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mDialog=new SpotsDialog.Builder()
+                .setContext(this)
+                .setMessage("Espere un momento")
+                .setCancelable(false).build(); mDialog=new SpotsDialog.Builder()
+                .setContext(this)
+                .setMessage("Espere un momento")
+                .setCancelable(false).build();
+
+
+
         mTextInpuTEmail=findViewById(R.id.textInputEmail);
         mTextInputPassword=findViewById(R.id.textInputPassword);
         mButtonLogin=findViewById(R.id.btnLogin);
         mButtonGoogle=findViewById(R.id.btnLoginGoogle);
-
         mTextViewRegister = findViewById(R.id.textViewRegister);
+
 
         //Inicializamos la autenticacion de firebase
         mAuthProvider = new AuthProvider();
@@ -72,13 +85,17 @@ public class MainActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-       mUserProvider = new UserProvider();
+        mUserProvider = new UserProvider();
 
         //Button para registrase con correo y contrase;a
         mButtonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                login();
+                if(!mTextInpuTEmail.getText().toString().isEmpty() && !mTextInputPassword.getText().toString().isEmpty()){
+                    login();
+                }else {
+                    Toast.makeText(MainActivity.this, "Debe ingresar su correo y contraseña", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -191,9 +208,11 @@ public class MainActivity extends AppCompatActivity {
         String password = mTextInputPassword.getText().toString();
         mAuthProvider.login(email, password).addOnCompleteListener((task) ->{
                 if(task.isSuccessful()){
+                    mDialog.show();
                     Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(intent);
                 }else {
+                    mDialog.dismiss();
                     Toast.makeText(MainActivity.this, "Email o contraseña que ingresaste es incorrecta", Toast.LENGTH_LONG).show();
                 }
         });
