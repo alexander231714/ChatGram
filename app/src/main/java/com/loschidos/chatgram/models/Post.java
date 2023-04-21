@@ -1,20 +1,13 @@
 package com.loschidos.chatgram.models;
 
 public class Post {
-    private String id ;
-    private String titulo ;
-    private String descripcion ;
-    private String img1 ;
-    private String img2 ;
-    private String categoria ;
-
-    private String idUsuario;
-
+    private String id, titulo, descripcion, img1, img2, categoria, idUsuario;
+    private long timestamp;
     public Post(){
 
     }
 
-    public Post(String id, String titulo, String descripcion, String img1, String img2, String categoria, String idUsuario) {
+    public Post(String id, String titulo, String descripcion, String img1, String img2, String categoria, String idUsuario, long timestamp) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -22,6 +15,7 @@ public class Post {
         this.img2 = img2;
         this.categoria = categoria;
         this.idUsuario = idUsuario;
+        this.timestamp = timestamp;
     }
 
     public String getId() {
@@ -78,5 +72,13 @@ public class Post {
 
     public void setIdUsuario(String idUsuario) {
         this.idUsuario = idUsuario;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

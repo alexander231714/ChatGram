@@ -28,6 +28,8 @@ public class UserProvider {
     public Task<Void> update(User user) {
         Map<String, Object> map = new HashMap<>();
         map.put("username", user.getUsername());
+        map.put("telefono", user.getTelefono());
+        map.put("timestamp", user.getTimestamp());
         return mCollection.document(user.getId()).update(map);
     }
 

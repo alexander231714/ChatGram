@@ -43,41 +43,29 @@ import dmax.dialog.SpotsDialog;
 
 public class PostActivity extends AppCompatActivity {
 
-    ImageView imgpost1; //variable que referencia la imagen que se va a subir
-    ImageView imgpost2;
-    File mImgFile1;
-    File mImgFile2;
-    private final int GALLERY_REQUEST_CODE = 1;// identificador dee la actividad
-    private final int GALLERY_REQUEST_CODE_2 = 2;
-    private final int PHOTO_REQUEST_CODE= 3;
-    private final int PHOTO_REQUEST_CODE_2= 4;
+    ImageView imgpost1, imgpost2; //variable que referencia la imagen que se va a subir
+    File mImgFile1, mImgFile2;
+    private final int GALLERY_REQUEST_CODE = 1, GALLERY_REQUEST_CODE_2 = 2;// identificador dee la actividad
+    private final int PHOTO_REQUEST_CODE = 3, PHOTO_REQUEST_CODE_2 = 4; //identificador de fotos
+
     ImageProvider imgprov; // INSTANCIA clase
     Button btnpublicar;
     AuthProvider Mauthprov;
     PostProvider mPostProvider;
-    TextInputEditText EtTitulo;
-    TextInputEditText EtDesc;
-    ImageView imgdep;
-    ImageView imgjuegos;
-    ImageView imgMusica;
-    ImageView imgPeli;
+    TextInputEditText EtTitulo, EtDesc;
+    ImageView imgdep, imgjuegos, imgMusica, imgPeli;
     TextView cate;
-    String categoria = "";
-    String mtitulo = "";
-    String mdescripcion;
+    String categoria = "", mtitulo = "", mdescripcion;
     AlertDialog mDialog;
-
     AlertDialog.Builder mBuilderSelector;
     CircleImageView mCircleImageBack;
     CharSequence options[];
 
     //para tomar foto camara 1
-    String mAdsolutePhotoPath;
-    String mPhotoPath;
+    String mAdsolutePhotoPath, mPhotoPath;
     File mPhotoFile;
     //para tomar foto camara 2
-    String mAdsolutePhotoPath2;
-    String mPhotoPath2;
+    String mAdsolutePhotoPath2, mPhotoPath2;
     File mPhotoFile2;
 
     @SuppressLint("WrongViewCast")
@@ -298,6 +286,7 @@ public class PostActivity extends AppCompatActivity {
                                                 post.setDescripcion(mdescripcion);
                                                 post.setCategoria(categoria);
                                                 post.setIdUsuario(Mauthprov.getUid());
+                                                post.setTimestamp(new Date().getTime());
                                                 mPostProvider.save(post).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> taskSave) {

@@ -20,6 +20,7 @@ import com.loschidos.chatgram.models.User;
 import com.loschidos.chatgram.providers.AuthProvider;
 import com.loschidos.chatgram.providers.UserProvider;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ import dmax.dialog.SpotsDialog;
 
 public class CompleteProfileActivity extends AppCompatActivity {
 
-    TextInputEditText mTextInputUsername;
+    TextInputEditText mTextInputUsername, mTextInputTelefono;
     Button mButtonRegister;
     AuthProvider mAuthProvider;
     UserProvider mUserProvider;
@@ -39,6 +40,7 @@ public class CompleteProfileActivity extends AppCompatActivity {
 
 
         mTextInputUsername=findViewById(R.id.textInputUsername);
+        mTextInputTelefono=findViewById(R.id.textInputTelefono);
         mButtonRegister=findViewById(R.id.btnRegister);
      //INSTANCIANDO PROPIEDADES AUTH Y USER
         //instanciamos el objeto de autenticacion firebase
@@ -62,8 +64,9 @@ public class CompleteProfileActivity extends AppCompatActivity {
 
     private void register() {
         String username=mTextInputUsername.getText().toString();
+        String telefono = mTextInputTelefono.getText().toString();
         if (!username.isEmpty()) {
-            updateUser(username);
+            updateUser(username, telefono);
         } else {
             Toast.makeText(this, "Para continuar ingresa todos los campos", Toast.LENGTH_LONG).show();
         }
@@ -72,12 +75,14 @@ public class CompleteProfileActivity extends AppCompatActivity {
     }
 
     //Metodo para crear un usuario con parametros email, password
-    private void updateUser(final String username) {
+    private void updateUser(final String username, final String telefono) {
         //id nos de vuelve UID del usuario, que se crea en Authentication(firebase)
         String id = mAuthProvider.getUid();
         User user = new User();
         user.setUsername(username);
         user.setId(id);
+        user.setTelefono(telefono);
+        user.setTimestamp(new Date().getTime());
         mDialog.show();
         /*si hubo un registro nuevo con google vamos a pedir que complete su inf
         * En este caso que ingrese su usuario(usamos update para que se sobre escriban los datos)*/

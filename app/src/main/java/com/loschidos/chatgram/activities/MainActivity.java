@@ -21,19 +21,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.loschidos.chatgram.R;
 import com.loschidos.chatgram.models.User;
 import com.loschidos.chatgram.providers.AuthProvider;
 import com.loschidos.chatgram.providers.UserProvider;
 import android.app.AlertDialog;
-import java.util.HashMap;
-import java.util.Map;
 
 import dmax.dialog.SpotsDialog;
 
@@ -103,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         mButtonGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn();
+                signInGoogle();
             }
         });
 
@@ -198,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
 
     // [START signin]
     /*dispara todo el proceso de autenticacion con google*/
-    private void signIn() {
+    private void signInGoogle() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -210,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
                 if(task.isSuccessful()){
                     mDialog.show();
                     Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 }else {
                     mDialog.dismiss();

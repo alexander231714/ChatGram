@@ -21,6 +21,7 @@ import com.loschidos.chatgram.models.User;
 import com.loschidos.chatgram.providers.AuthProvider;
 import com.loschidos.chatgram.providers.UserProvider;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -32,7 +33,7 @@ import dmax.dialog.SpotsDialog;
 public class RegisterActivity2 extends AppCompatActivity {
 
     CircleImageView mCirculeImageViewBack;
-    TextInputEditText mTextInputUsername, mTextInputEmail, mTextInputPassword, mTextInputConfirPassword;
+    TextInputEditText mTextInputUsername, mTextInputEmail, mTextInputPassword, mTextInputConfirPassword, mTextInputTelefono;
     Button mButtonRegister;
     AuthProvider mAuthProvider ;
     UserProvider mUserProviders;
@@ -47,6 +48,7 @@ public class RegisterActivity2 extends AppCompatActivity {
         mTextInputUsername=findViewById(R.id.textInputUsername);
         mTextInputPassword=findViewById(R.id.textInputPassword);
         mTextInputConfirPassword=findViewById(R.id.textInputConfirPassword);
+        mTextInputTelefono=findViewById(R.id.textInputTelefono);
         mButtonRegister=findViewById(R.id.btnRegister);
 
         mCirculeImageViewBack=findViewById(R.id.circleImageBack);
@@ -83,13 +85,14 @@ public class RegisterActivity2 extends AppCompatActivity {
         String email=mTextInputEmail.getText().toString();
         String password=mTextInputPassword.getText().toString();
         String confirmPassword=mTextInputConfirPassword.getText().toString();
+        String telefono = mTextInputTelefono.getText().toString();
 
-        if (!username.isEmpty() && !email.isEmpty() && !password.isEmpty() && !confirmPassword.isEmpty()) {
+        if (!username.isEmpty() && !email.isEmpty() && !password.isEmpty() && !confirmPassword.isEmpty() && !telefono.isEmpty()){
             if (isEmailValid(email)) {
                 if (password.equals(confirmPassword)) {
                     if (password.length() >= 6) {
                         // Ejecutar método createUser()
-                        createUser(username, email, password);
+                        createUser(username, email, password, telefono);
                     } else {
                         Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_LONG).show();
                     }
@@ -108,7 +111,7 @@ public class RegisterActivity2 extends AppCompatActivity {
 
     //Metodo para crear un usuario con parametros email, password
     //En caso de no querer almacenar sus datos se usa el esquema anterior
-    private void createUser(final String username,final String email, final String password) {
+    private void createUser(final String username,final String email, final String password, final String telefono) {
         mDialog.show();
         mAuthProvider.register(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -125,6 +128,8 @@ public class RegisterActivity2 extends AppCompatActivity {
                     user.setId(id);
                     user.setEmail(email);
                     user.setUsername(username);
+                    user.setTelefono(telefono);
+                    user.setTimestamp(new Date().getTime());
                     /*Si la informacion se almaceno correctamente en la base de datos*/
                     mUserProviders.create(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
