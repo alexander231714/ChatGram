@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.UploadTask;
 import com.loschidos.chatgram.R;
 import com.loschidos.chatgram.models.Post;
@@ -63,6 +64,8 @@ public class EditProfileActivity extends AppCompatActivity {
     File mImgFile1, mImgFile2;
     String mUsername="";
     String mPhone="";
+    String mImageProfile="";
+    String mImageCover="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +121,47 @@ public class EditProfileActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        getuser();
+    }
+
+    private void getuser(){
+        mUsersProvider.getUser(mAuthProvider.getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                if(documentSnapshot.exists()){
+                    if (documentSnapshot.contains("username")){
+                        mUsername = documentSnapshot.getString("username");
+                        mTextInputUsername.setText(mUsername);
+                    }
+
+                    if (documentSnapshot.contains("phone")){
+                        mPhone = documentSnapshot.getString("phone");
+                        mTextInputPhone.setText(mPhone);
+                    }
+
+                    if (documentSnapshot.contains("image_profile")){
+                        mImageProfile = documentSnapshot.getString("image_profile");
+                        if(mImageProfile != null){
+                            if ((!mImageProfile.isEmpty())){
+                         Picasso.with(EditProfileActivity.this).load(mImageProfile).into(mcircleImageViewProfile);
+                            }
+                        }
+                    }
+
+                    if (documentSnapshot.contains("image_cover")){
+                        mImageCover = documentSnapshot.getString("image_cover");
+                        if(mImageCover != null) {
+                            if ((!mImageCover.isEmpty())) {
+                          Picasso.with(EditProfileActivity.this).load(mImageCover).into(mImageViewCovert);
+                            }
+                        }
+                    }
+
+                }
+            }
+        });
     }
 
     private void clickEditProfile() {
@@ -139,8 +183,30 @@ public class EditProfileActivity extends AppCompatActivity {
             else if (mPhotoFile != null && mImgFile2 != null){
                 SaveImg(mPhotoFile, mImgFile2);
             }
+
+            else if (mPhotoFile != null) {
+                saveImage(mPhotoFile,  true);
+            }
+
+            else if (mPhotoFile2 != null) {
+                saveImage(mPhotoFile2,  true);
+            }
+
+            else if (mImgFile1 != null) {
+                saveImage(mImgFile1,  true);
+            }
+
+            else if (mImgFile2 != null) {
+                saveImage(mImgFile2,  false);
+            }
+
             else {
-                Toast.makeText(EditProfileActivity.this, "Debes seleccionar una imagen", Toast.LENGTH_LONG).show();
+
+                User user=new User();
+                user.setUsername(mUsername);
+                user.setTelefono(mPhone);
+                user.setId(mAuthProvider.getUid());
+                UpdateInfo(user);
             }
         }else {
             Toast.makeText(this, "Ingrese el nombre de usuario y telefono", Toast.LENGTH_SHORT).show();
@@ -172,17 +238,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                                 user.setImageProfile(urlProfile);
                                                 user.setImageCover(urlCover);
                                                 user.setId(mAuthProvider.getUid());
-                                                mUsersProvider.update(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        mDialog.dismiss();
-                                                        if(task.isSuccessful()){
-                                                            Toast.makeText(EditProfileActivity.this, "Informacion actualizada correctamente", Toast.LENGTH_SHORT).show();
-                                                        }else{
-                                                            Toast.makeText(EditProfileActivity.this, "La informacion no se pudo actualizar", Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    }
-                                                });
+                                                UpdateInfo(user);
                                             }
                                         });
                                     }
@@ -203,6 +259,59 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
+    private void saveImage(File image, boolean isProfileImage){
+        mDialog.show();
+        imgprov.save(EditProfileActivity.this, image).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                if (task.isSuccessful()) {
+                    imgprov.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            final String url = uri.toString();
+                            User user=new User();
+                            user.setUsername(mUsername);
+                            user.setTelefono(mPhone);
+
+                            if (isProfileImage){
+                                user.setImageProfile(url);
+                                user.setImageCover(mImageCover);
+                            }
+                            else {
+                                user.setImageCover(url);
+                                user.setImageProfile(mImageProfile);
+                            }
+
+                            user.setId(mAuthProvider.getUid());
+                            UpdateInfo(user);
+                        }
+                    });
+                }
+                else {
+                    mDialog.dismiss();
+                    Toast.makeText(EditProfileActivity.this, "Hubo error al almacenar la imagen", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    private  void  UpdateInfo (User user) {
+      if(mDialog.isShowing()){
+          mDialog.show();
+      }
+
+        mUsersProvider.update(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                mDialog.dismiss();
+                if(task.isSuccessful()){
+                    Toast.makeText(EditProfileActivity.this, "Informacion actualizada correctamente", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(EditProfileActivity.this, "La informacion no se pudo actualizar", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
     private void SelecOptionImage(final int numberImage) {
         mBuilderSelector.setItems(options, new DialogInterface.OnClickListener() {
             @Override
