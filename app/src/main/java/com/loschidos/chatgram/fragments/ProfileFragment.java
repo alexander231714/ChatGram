@@ -99,8 +99,8 @@ mPostProvider.getPostByUser(mAuthProvider.getUid()).get().addOnSuccessListener(n
             }
 
             if(documentSnapshot.exists()){
-                if(documentSnapshot.contains("phone")){
-                    String phone = documentSnapshot.getString("phone");
+                if(documentSnapshot.contains("telefono")){
+                    String phone = documentSnapshot.getString("telefono");
                     mTextViewPhone.setText(phone);
                 }
             }

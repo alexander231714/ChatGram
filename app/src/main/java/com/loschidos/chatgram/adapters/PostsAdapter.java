@@ -2,6 +2,7 @@ package com.loschidos.chatgram.adapters;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.loschidos.chatgram.R;
+import com.loschidos.chatgram.activities.PostDetailActivity;
 import com.loschidos.chatgram.models.Post;
 import com.squareup.picasso.Picasso;
 
+import java.lang.annotation.Documented;
 
 
 public class PostsAdapter extends FirestoreRecyclerAdapter<Post, PostsAdapter.ViewHolder> {
@@ -30,6 +34,10 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Post, PostsAdapter.Vi
 
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Post post) {
+
+        DocumentSnapshot document = getSnapshots().getSnapshot(position);
+        final String postId = document.getId();
+
         holder.textViewTitle.setText(post.getTitulo());
         holder.textViewDescription.setText(post.getDescripcion());
         if (post.getImg1() != null) {
@@ -37,6 +45,15 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Post, PostsAdapter.Vi
                 Picasso.with(context).load(post.getImg1()).into(holder.imageViewPost);
             }
         }
+        //añadimos un evente a la tarjeta de la publicacion
+        holder.viewHolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, PostDetailActivity.class);
+                intent.putExtra("id", postId);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @NonNull
@@ -47,15 +64,17 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Post, PostsAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewTitle;
-        TextView textViewDescription;
+        TextView textViewTitle, textViewDescription;
         ImageView imageViewPost;
+        //Esta variable va optener la info de la tarjeta (post)
+        View viewHolder;
 
         public ViewHolder(View view) {
             super(view);
             textViewTitle = view.findViewById(R.id.textViewTitlePostCard);
             textViewDescription = view.findViewById(R.id.textViewDescriptionPostcard);
             imageViewPost = view.findViewById(R.id.imageViewPosCard);
+            viewHolder = view;
         }
     }
 
