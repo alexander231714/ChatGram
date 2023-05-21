@@ -1,6 +1,7 @@
 package com.loschidos.chatgram.activities;
 
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
@@ -18,12 +19,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.loschidos.chatgram.R;
 import com.loschidos.chatgram.adapters.SliderAdapter;
+import com.loschidos.chatgram.models.Comment;
 import com.loschidos.chatgram.models.SliderItem;
+import com.loschidos.chatgram.providers.AuthProvider;
+import com.loschidos.chatgram.providers.CommentsProvider;
 import com.loschidos.chatgram.providers.PostProvider;
 import com.loschidos.chatgram.providers.UserProvider;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
@@ -32,6 +38,7 @@ import com.smarteist.autoimageslider.SliderView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -52,6 +59,8 @@ public class PostDetailActivity extends AppCompatActivity {
     Button mButtonShowProfile;
     CircleImageView mCircleImageViewBack;
     String midUser = "";
+    CommentsProvider mcommentsProvider;
+    AuthProvider mAuthProvider;
 FloatingActionButton mFabComment;
 
 
@@ -78,6 +87,8 @@ FloatingActionButton mFabComment;
 
         mPostProvider = new PostProvider();
         mUserProvider = new UserProvider();
+        mcommentsProvider = new CommentsProvider();
+        mAuthProvider = new AuthProvider();
 
         mExtraPostId = getIntent().getStringExtra("id");
 
@@ -133,6 +144,13 @@ alert.setView(container);
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
             String value = editText.getText().toString();
+            if(!value.isEmpty()){
+                createComment(value);
+            }
+            else{
+                Toast.makeText(PostDetailActivity.this, "Debe Ingresar Algo", Toast.LENGTH_SHORT).show();
+            }
+
             }
         });
         alert.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -144,10 +162,29 @@ alert.setView(container);
         alert.show();
     }
 
+    private void createComment(String value) {
+        Comment comment = new Comment();
+        comment.setComment(value);
+        comment.setIdPost(mExtraPostId);
+        comment.setIdUser(mAuthProvider.getUid());
+        comment.setTimestamp(new Date().getTime());
+        mcommentsProvider.create(comment).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                 Toast.makeText(PostDetailActivity.this, "El comentario se ha publicado exitosamente", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                Toast.makeText(PostDetailActivity.this, "No se pudo publicar el comentario", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
     private void goToShowProfile() {
         if(!midUser.equals("")){
             Intent intent = new Intent(PostDetailActivity.this, UserProfileActivity.class);
-            intent.putExtra("idUser",midUser);
+            intent.putExtra("IdUser",midUser);
             startActivity(intent);
         }
 else {

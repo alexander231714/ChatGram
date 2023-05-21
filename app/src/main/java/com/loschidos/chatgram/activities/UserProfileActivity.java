@@ -55,17 +55,17 @@ public class UserProfileActivity extends AppCompatActivity {
         mUserProvider = new UserProvider();
         mAuthProvider = new AuthProvider();
 
-        mExtraidUser= getIntent().getStringExtra("idUser");
+        mExtraidUser= getIntent().getStringExtra("IdUser");
 
-        getUser();
-        getPostNumber();
+
         mCircleImageViewBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-
+        getUser();
+        getPostNumber();
     }
 
     private void getPostNumber(){
