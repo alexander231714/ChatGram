@@ -29,15 +29,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * A simple {@link Fragment} subclass.
  */
 public class ProfileFragment extends Fragment {
-    LinearLayout mLinerLayoutEditProfile;
     View mView;
+    LinearLayout mLinerLayoutEditProfile;
     UserProvider mUserProvider;
     AuthProvider mAuthProvider;
-
-    TextView mTextViewUserName;
-    TextView mTextViewPhone;
-    TextView mTextViewEmail;
-    TextView mTextViewPost;
+    TextView mTextViewUserName, mTextViewPhone, mTextViewEmail, mTextViewPost;
     ImageView mImageCover;
     CircleImageView mImageProfile;
 

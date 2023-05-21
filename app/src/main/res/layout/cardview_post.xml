@@ -28,7 +28,7 @@
             android:paddingTop="10dp"
             android:paddingRight="10dp"
             android:text="Titulo: "
-            android:textColor="@color/DarkBlue"
+            android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
         <TextView
@@ -38,6 +38,7 @@
             android:text="Descripcion: "
             android:layout_margin="10dp"
             android:textSize="17sp"
+            android:textColor="@color/gris"
             />
     </LinearLayout>
 

@@ -4,6 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -11,12 +15,17 @@ import com.loschidos.chatgram.R;
 import com.loschidos.chatgram.adapters.SliderAdapter;
 import com.loschidos.chatgram.models.SliderItem;
 import com.loschidos.chatgram.providers.PostProvider;
+import com.loschidos.chatgram.providers.UserProvider;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class PostDetailActivity extends AppCompatActivity {
@@ -25,7 +34,13 @@ public class PostDetailActivity extends AppCompatActivity {
     SliderAdapter mSliderAdapter;
     List<SliderItem>mSliderItems = new ArrayList<>();
     PostProvider mPostProvider;
+    UserProvider mUserProvider;
     String mExtraPostId;
+    TextView mTextViewTitle, mTextViewDescription, mTextViewUsername, mTextViewPhone, mTextViewNameCategory;
+    ImageView mImageViewCategory;
+    CircleImageView mCircleImageViewProfile;
+    Button mButtonShowProfile;
+    CircleImageView mCircleImageViewBack;
 
 
     @Override
@@ -34,11 +49,36 @@ public class PostDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_post_detail);
 
         mSliderView=findViewById(R.id.imageSlider);
+
+        mTextViewTitle=findViewById(R.id.textViewTitle);
+        mTextViewDescription=findViewById(R.id.textViewDescrition);
+        mTextViewUsername=findViewById(R.id.TextViewUsername);
+        mTextViewPhone=findViewById(R.id.TextViewPhone);
+        mTextViewNameCategory=findViewById(R.id.textViewNameCategory);
+
+        mImageViewCategory=findViewById(R.id.imageViewCategory);
+
+        mCircleImageViewProfile=findViewById(R.id.circleImageProfile);
+
+        mButtonShowProfile=findViewById(R.id.btnShowProfile);
+        mCircleImageViewBack =findViewById(R.id.circleImageBack);
+
         mPostProvider = new PostProvider();
+        mUserProvider = new UserProvider();
 
         mExtraPostId = getIntent().getStringExtra("id");
 
         getPost();
+
+
+        mCircleImageViewBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
     }
     private  void  instanceSlider(){
         mSliderAdapter= new SliderAdapter(PostDetailActivity.this, mSliderItems);
@@ -70,7 +110,58 @@ public class PostDetailActivity extends AppCompatActivity {
                         item.setImageUrl(img2);
                         mSliderItems.add(item);
                     }
+                    if(documentSnapshot.contains("titulo")){
+                        String titulo = documentSnapshot.getString("titulo");
+                        mTextViewTitle.setText(titulo.toUpperCase());
+                    }
+                    if(documentSnapshot.contains("descripcion")){
+                        String descripcion = documentSnapshot.getString("descripcion");
+                        mTextViewDescription.setText(descripcion);
+                    }
+                    if(documentSnapshot.contains("categoria")){
+                        String categoria = documentSnapshot.getString("categoria");
+                        mTextViewNameCategory.setText(categoria);
+
+                        if(categoria.equals("DEPORTE")){
+                            mImageViewCategory.setImageResource(R.drawable.deportes);
+                        }
+                        else if(categoria.equals("JUEGOS")){
+                            mImageViewCategory.setImageResource(R.drawable.juegos);
+                        }
+                        else if(categoria.equals("MUSICA")){
+                            mImageViewCategory.setImageResource(R.drawable.musica);
+                        }
+                        else if(categoria.equals("PELICULAS")){
+                            mImageViewCategory.setImageResource(R.drawable.pelis);
+                        }
+                    }
+                    if(documentSnapshot.contains("idUsuario")){
+                        String idUsuario = documentSnapshot.getString("idUsuario");
+                        getUserInfo(idUsuario);
+                    }
                     instanceSlider();
+                }
+            }
+        });
+    }
+
+    private void getUserInfo(String idUsuario) {
+        mUserProvider.getUser(idUsuario).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if(documentSnapshot.exists()){
+                    if(documentSnapshot.contains("username")){
+                        String username = documentSnapshot.getString("username");
+                        mTextViewUsername.setText(username);
+                    }
+                    if(documentSnapshot.contains("telefono")){
+                        String telefono = documentSnapshot.getString("telefono");
+                        mTextViewPhone.setText(telefono);
+                    }
+                    if(documentSnapshot.contains("image_profile")){
+                        String imageProfile = documentSnapshot.getString("image_profile");
+                        Picasso.with(PostDetailActivity.this).load(imageProfile).into(mCircleImageViewProfile);
+                    }
                 }
             }
         });
