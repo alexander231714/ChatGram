@@ -1,13 +1,16 @@
 package com.loschidos.chatgram.activities;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -41,6 +44,7 @@ public class PostDetailActivity extends AppCompatActivity {
     CircleImageView mCircleImageViewProfile;
     Button mButtonShowProfile;
     CircleImageView mCircleImageViewBack;
+    String midUser = "";
 
 
     @Override
@@ -78,8 +82,26 @@ public class PostDetailActivity extends AppCompatActivity {
             }
         });
 
+        mButtonShowProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToShowProfile();
+            }
+        });
 
     }
+
+    private void goToShowProfile() {
+        if(!midUser.equals("")){
+            Intent intent = new Intent(PostDetailActivity.this, UserProfileActivity.class);
+            intent.putExtra("idUser",midUser);
+            startActivity(intent);
+        }
+else {
+            Toast.makeText(this, "El ID del usuario aun no se carga", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private  void  instanceSlider(){
         mSliderAdapter= new SliderAdapter(PostDetailActivity.this, mSliderItems);
         mSliderView.setSliderAdapter(mSliderAdapter);
@@ -136,8 +158,8 @@ public class PostDetailActivity extends AppCompatActivity {
                         }
                     }
                     if(documentSnapshot.contains("idUsuario")){
-                        String idUsuario = documentSnapshot.getString("idUsuario");
-                        getUserInfo(idUsuario);
+                       midUser = documentSnapshot.getString("idUsuario");
+                        getUserInfo(midUser);
                     }
                     instanceSlider();
                 }
