@@ -32,6 +32,19 @@
             android:textSize="20sp"
             android:textStyle="bold" />
         <TextView
+            android:id="@+id/textViewUsernamePostCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:text="Nombre de usuario"
+            android:textColor="@color/skyblue"
+            android:textSize="17sp"
+            android:textStyle="italic" />
+
+        <TextView
             android:id="@+id/textViewDescriptionPostcard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,7 +52,38 @@
             android:layout_margin="10dp"
             android:textSize="17sp"
             android:textColor="@color/gris"
+            android:maxLines="2"
             />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/Gray"
+            android:layout_marginTop="5dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginBottom="10dp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginBottom="10dp"
+            >
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/icon_like_grey"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center|right"
+                android:textSize="16sp"
+                android:textColor="@color/gris"
+                android:text="0 Me gustas"/>
+        </LinearLayout>
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
