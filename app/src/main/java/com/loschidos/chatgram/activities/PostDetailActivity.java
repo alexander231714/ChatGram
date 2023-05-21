@@ -3,16 +3,23 @@ package com.loschidos.chatgram.activities;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.loschidos.chatgram.R;
 import com.loschidos.chatgram.adapters.SliderAdapter;
@@ -45,6 +52,7 @@ public class PostDetailActivity extends AppCompatActivity {
     Button mButtonShowProfile;
     CircleImageView mCircleImageViewBack;
     String midUser = "";
+FloatingActionButton mFabComment;
 
 
     @Override
@@ -66,6 +74,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         mButtonShowProfile=findViewById(R.id.btnShowProfile);
         mCircleImageViewBack =findViewById(R.id.circleImageBack);
+        mFabComment =findViewById(R.id.fabComment);
 
         mPostProvider = new PostProvider();
         mUserProvider = new UserProvider();
@@ -74,6 +83,12 @@ public class PostDetailActivity extends AppCompatActivity {
 
         getPost();
 
+        mFabComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShowDialogComment();
+            }
+        });
 
         mCircleImageViewBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +104,44 @@ public class PostDetailActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void ShowDialogComment() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(PostDetailActivity.this);
+        alert.setTitle("COMENTARIO!!");
+        alert.setMessage("Ingresa tu comentario");
+
+       final EditText editText = new EditText(PostDetailActivity.this);
+       editText.setHint("Deja tu comentario");
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(36,0,36,36);
+
+        editText.setLayoutParams(params);
+
+RelativeLayout container = new RelativeLayout(PostDetailActivity.this);
+RelativeLayout.LayoutParams relativeparams = new RelativeLayout.LayoutParams(
+        RelativeLayout.LayoutParams.MATCH_PARENT,
+        RelativeLayout.LayoutParams.WRAP_CONTENT
+);
+container.setLayoutParams(relativeparams);
+container.addView(editText);
+alert.setView(container);
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+            String value = editText.getText().toString();
+            }
+        });
+        alert.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        alert.show();
     }
 
     private void goToShowProfile() {
