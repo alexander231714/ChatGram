@@ -3,6 +3,7 @@ package com.loschidos.chatgram.providers;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.loschidos.chatgram.models.Comment;
 
 public class CommentsProvider {
@@ -13,5 +14,8 @@ public class CommentsProvider {
 
     public Task <Void> create (Comment comment){
         return mCollection.document().set(comment);
+    }
+    public Query getCommentsByPost(String idPost) {
+        return mCollection.whereEqualTo("idPost",idPost);
     }
 }

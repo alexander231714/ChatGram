@@ -14,7 +14,7 @@
         <ImageView
             android:id="@+id/imageViewPosCard"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="450dp"
             android:scaleType="centerCrop"
             android:contentDescription="imgpost"
             />

@@ -3,6 +3,8 @@ package com.loschidos.chatgram.activities;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -19,14 +21,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
 import com.loschidos.chatgram.R;
+import com.loschidos.chatgram.adapters.CommentAdapter;
+import com.loschidos.chatgram.adapters.PostsAdapter;
 import com.loschidos.chatgram.adapters.SliderAdapter;
 import com.loschidos.chatgram.models.Comment;
+import com.loschidos.chatgram.models.Post;
 import com.loschidos.chatgram.models.SliderItem;
 import com.loschidos.chatgram.providers.AuthProvider;
 import com.loschidos.chatgram.providers.CommentsProvider;
@@ -61,6 +68,8 @@ public class PostDetailActivity extends AppCompatActivity {
     String midUser = "";
     CommentsProvider mcommentsProvider;
     AuthProvider mAuthProvider;
+    RecyclerView mRecyclerView;
+    CommentAdapter mAdapter;
 FloatingActionButton mFabComment;
 
 
@@ -84,6 +93,10 @@ FloatingActionButton mFabComment;
         mButtonShowProfile=findViewById(R.id.btnShowProfile);
         mCircleImageViewBack =findViewById(R.id.circleImageBack);
         mFabComment =findViewById(R.id.fabComment);
+        mRecyclerView=findViewById(R.id.recyclerViewComments);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(PostDetailActivity.this);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
 
         mPostProvider = new PostProvider();
         mUserProvider = new UserProvider();
@@ -115,6 +128,26 @@ FloatingActionButton mFabComment;
             }
         });
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Query query = mcommentsProvider.getCommentsByPost(mExtraPostId);
+        FirestoreRecyclerOptions<Comment> options =
+                new FirestoreRecyclerOptions.Builder<Comment>()
+                        .setQuery(query, Comment.class )
+                        .build();
+
+        mAdapter = new CommentAdapter(options, PostDetailActivity.this);
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mAdapter.stopListening();
     }
 
     private void ShowDialogComment() {
