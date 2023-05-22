@@ -2,19 +2,29 @@ package com.loschidos.chatgram.activities;
 
 import static java.security.AccessController.getContext;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.loschidos.chatgram.R;
+import com.loschidos.chatgram.adapters.MyPostsAdapter;
+import com.loschidos.chatgram.models.Post;
 import com.loschidos.chatgram.providers.AuthProvider;
 import com.loschidos.chatgram.providers.PostProvider;
 import com.loschidos.chatgram.providers.UserProvider;
@@ -24,17 +34,17 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserProfileActivity extends AppCompatActivity {
     LinearLayout mLinerLayoutEditProfile;
-
     TextView mTextViewUserName, mTextViewPhone, mTextViewEmail, mTextViewPost;
     ImageView mImageCover;
     CircleImageView mImageProfile;
-
+    CircleImageView mCircleImageViewBack;
     UserProvider mUserProvider;
     AuthProvider mAuthProvider;
     PostProvider mPostProvider;
     String mExtraidUser;
-
-    CircleImageView mCircleImageViewBack;
+    MyPostsAdapter mAdapter ;
+    RecyclerView mRecyclerView;
+    TextView mTextViewPostExist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +57,14 @@ public class UserProfileActivity extends AppCompatActivity {
         mTextViewPhone = findViewById(R.id.TextViewPhone);
         mTextViewPost = findViewById(R.id.TextViewPost);
         mImageProfile = findViewById(R.id.CircleImageProfile);
+        mTextViewPostExist = findViewById(R.id.textViewPostExist);
         mImageCover = findViewById(R.id.ImageViewCover);
         mCircleImageViewBack =findViewById(R.id.circleImageBack);
+
+        mRecyclerView = findViewById(R.id.recyclerViewMyPost);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(UserProfileActivity.this);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
 
 
         mPostProvider =new PostProvider();
@@ -66,6 +82,43 @@ public class UserProfileActivity extends AppCompatActivity {
         });
         getUser();
         getPostNumber();
+        checkIfExistPost();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Query query = mPostProvider.getPostByUser(mExtraidUser);
+        FirestoreRecyclerOptions<Post> options =
+                new FirestoreRecyclerOptions.Builder<Post>()
+                        .setQuery(query, Post.class )
+                        .build();
+
+        mAdapter = new MyPostsAdapter(options, UserProfileActivity.this);
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mAdapter.stopListening();
+    }
+
+    private void checkIfExistPost() {
+        mPostProvider.getPostByUser(mExtraidUser).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
+                int numberPost = queryDocumentSnapshots.size();
+                if(numberPost >0){
+                    mTextViewPostExist.setText("Publicaciones ");
+                    mTextViewPostExist.setTextColor(Color.BLUE);
+                }else {
+                    mTextViewPostExist.setText("No hay Publicaciones ");
+                    mTextViewPostExist.setTextColor(Color.GRAY);
+                }
+            }
+        });
     }
 
     private void getPostNumber(){

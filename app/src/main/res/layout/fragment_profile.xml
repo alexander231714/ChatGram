@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.ProfileFragment">
+    tools:context=".fragments.FiltersFragment">
 
 <!-- Servira para darle efecto de deslizamiento -->
    <com.google.android.material.appbar.AppBarLayout
@@ -163,33 +163,33 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="20dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
             <TextView
+                android:id="@+id/textViewPostExist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No hay publicaciones"
-                android:layout_marginVertical="10dp"
                 android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="10dp"
+                android:text="No hay publicaciones"
                 android:textSize="18sp"
-                android:textStyle="italic"
-                />
+                android:textStyle="italic" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewMyPost"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"/>
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
 
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

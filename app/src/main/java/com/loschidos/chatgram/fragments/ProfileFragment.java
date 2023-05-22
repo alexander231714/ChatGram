@@ -1,6 +1,7 @@
 package com.loschidos.chatgram.fragments;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.loschidos.chatgram.R;
@@ -39,7 +43,7 @@ public class ProfileFragment extends Fragment {
     LinearLayout mLinerLayoutEditProfile;
     UserProvider mUserProvider;
     AuthProvider mAuthProvider;
-    TextView mTextViewUserName, mTextViewPhone, mTextViewEmail, mTextViewPost;
+    TextView mTextViewUserName, mTextViewPhone, mTextViewEmail, mTextViewPost, mTextViewPostExist;
     ImageView mImageCover;
     CircleImageView mImageProfile;
     PostProvider mPostProvider;
@@ -62,6 +66,7 @@ public class ProfileFragment extends Fragment {
         mTextViewUserName = mView.findViewById(R.id.TextViewUsername);
         mTextViewPhone = mView.findViewById(R.id.TextViewPhone);
         mTextViewPost = mView.findViewById(R.id.TextViewPost);
+        mTextViewPostExist = mView.findViewById(R.id.textViewPostExist);
         mImageProfile = mView.findViewById(R.id.CircleImageProfile);
         mImageCover = mView.findViewById(R.id.ImageViewCover);
         mRecyclerView = mView.findViewById(R.id.recyclerViewMyPost);
@@ -78,7 +83,24 @@ public class ProfileFragment extends Fragment {
 
         getUser();
         getPostNumber();
+        checkIfExistPost();
         return mView;
+    }
+
+    private void checkIfExistPost() {
+        mPostProvider.getPostByUser(mAuthProvider.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
+                int numberPost = queryDocumentSnapshots.size();
+                if(numberPost >0){
+                    mTextViewPostExist.setText("Publicaciones ");
+                    mTextViewPostExist.setTextColor(Color.BLUE);
+                }else {
+                    mTextViewPostExist.setText("No hay Publicaciones ");
+                    mTextViewPostExist.setTextColor(Color.GRAY);
+                }
+            }
+        });
     }
 
     @Override

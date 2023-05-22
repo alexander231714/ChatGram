@@ -1,7 +1,9 @@
 package com.loschidos.chatgram.adapters;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +58,12 @@ public class MyPostsAdapter extends FirestoreRecyclerAdapter<Post, MyPostsAdapte
         holder.textViewRelativeTime.setText(relativeTime);
         holder.textViewTitle.setText(post.getTitulo().toUpperCase());
 
+        if(post.getIdUsuario().equals(mAuthProvider.getUid())){
+            holder.imageViewDelete.setVisibility(View.VISIBLE);
+        }else {
+            holder.imageViewDelete.setVisibility(View.GONE);
+        }
+
         if (post.getImg1() != null) {
             if (!post.getImg1().isEmpty()) {
             Picasso.with(context).load(post.getImg1()).into(holder.circleImagePost);
@@ -73,9 +81,26 @@ public class MyPostsAdapter extends FirestoreRecyclerAdapter<Post, MyPostsAdapte
         holder.imageViewDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                deletePost(postId);
+                showConfirmDelete(postId);
             }
         });
+
+
+    }
+
+    private void showConfirmDelete(String postId) {
+        new AlertDialog.Builder(context)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Eliminar publicación")
+                .setMessage("¿Está seguro de realizar esta acción?")
+                .setPositiveButton("SI", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deletePost(postId);
+                    }
+                })
+                .setNegativeButton("NO", null)
+                .show();
     }
 
     private void deletePost(String postId) {
