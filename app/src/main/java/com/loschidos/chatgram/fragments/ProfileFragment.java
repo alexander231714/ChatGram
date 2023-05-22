@@ -2,9 +2,6 @@ package com.loschidos.chatgram.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +10,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.loschidos.chatgram.R;
 import com.loschidos.chatgram.activities.EditProfileActivity;
+import com.loschidos.chatgram.adapters.MyPostsAdapter;
+import com.loschidos.chatgram.adapters.PostsAdapter;
+import com.loschidos.chatgram.models.Post;
 import com.loschidos.chatgram.providers.AuthProvider;
 import com.loschidos.chatgram.providers.PostProvider;
 import com.loschidos.chatgram.providers.UserProvider;
@@ -39,6 +45,10 @@ public class ProfileFragment extends Fragment {
 
     PostProvider mPostProvider;
 
+    RecyclerView mRecyclerView;
+
+    MyPostsAdapter mAdapter ;
+
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -57,17 +67,44 @@ public class ProfileFragment extends Fragment {
         mTextViewPost = mView.findViewById(R.id.TextViewPost);
         mImageProfile = mView.findViewById(R.id.CircleImageProfile);
         mImageCover = mView.findViewById(R.id.ImageViewCover);
+        mRecyclerView = mView.findViewById(R.id.recyclerViewMyPost);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+
 
         mLinerLayoutEditProfile.setOnClickListener(view -> goToEditProfile());
+
         mPostProvider =new PostProvider();
         mUserProvider = new UserProvider();
         mAuthProvider = new AuthProvider();
+
         getUser();
         getPostNumber();
         return mView;
     }
 
-   private void goToEditProfile(){
+    @Override
+    public void onStart() {
+        super.onStart();
+        Query query = mPostProvider.getPostByUser(mAuthProvider.getUid());
+        FirestoreRecyclerOptions<Post> options =
+                new FirestoreRecyclerOptions.Builder<Post>()
+                        .setQuery(query, Post.class )
+                        .build();
+
+        mAdapter = new MyPostsAdapter(options, getContext());
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mAdapter.stopListening();
+    }
+
+    private void goToEditProfile(){
        Intent intent = new Intent(getContext(), EditProfileActivity.class);
        startActivity(intent);
        Log.d("DEBUG", "Actividad EditProfileActivity iniciada");
