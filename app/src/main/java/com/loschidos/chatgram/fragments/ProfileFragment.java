@@ -42,11 +42,8 @@ public class ProfileFragment extends Fragment {
     TextView mTextViewUserName, mTextViewPhone, mTextViewEmail, mTextViewPost;
     ImageView mImageCover;
     CircleImageView mImageProfile;
-
     PostProvider mPostProvider;
-
     RecyclerView mRecyclerView;
-
     MyPostsAdapter mAdapter ;
 
 

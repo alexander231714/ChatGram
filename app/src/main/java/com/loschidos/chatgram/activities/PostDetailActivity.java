@@ -149,10 +149,10 @@ FloatingActionButton mFabComment;
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
                 int numberLikes = queryDocumentSnapshots.size();
                 if (numberLikes==1){
-                    mTextViewLikes.setText(numberLikes + "Me gusta");
+                    mTextViewLikes.setText(numberLikes + " Me gusta");
                 }
                 else {
-                    mTextViewLikes.setText(numberLikes + "Me gustas");
+                    mTextViewLikes.setText(numberLikes + " Me gustas");
                 }
             }
         });
