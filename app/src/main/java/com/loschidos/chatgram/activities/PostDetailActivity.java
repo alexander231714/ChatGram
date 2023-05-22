@@ -2,6 +2,7 @@ package com.loschidos.chatgram.activities;
 
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,7 +28,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.loschidos.chatgram.R;
 import com.loschidos.chatgram.adapters.CommentAdapter;
 import com.loschidos.chatgram.adapters.PostsAdapter;
@@ -37,8 +41,10 @@ import com.loschidos.chatgram.models.Post;
 import com.loschidos.chatgram.models.SliderItem;
 import com.loschidos.chatgram.providers.AuthProvider;
 import com.loschidos.chatgram.providers.CommentsProvider;
+import com.loschidos.chatgram.providers.LikesProvider;
 import com.loschidos.chatgram.providers.PostProvider;
 import com.loschidos.chatgram.providers.UserProvider;
+import com.loschidos.chatgram.utils.RelativeTime;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
@@ -71,6 +77,9 @@ public class PostDetailActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
     CommentAdapter mAdapter;
 FloatingActionButton mFabComment;
+    TextView mTextViewRelativeTime;
+    TextView mTextViewLikes;
+   LikesProvider mLikesProvider;
 
 
     @Override
@@ -94,6 +103,8 @@ FloatingActionButton mFabComment;
         mCircleImageViewBack =findViewById(R.id.circleImageBack);
         mFabComment =findViewById(R.id.fabComment);
         mRecyclerView=findViewById(R.id.recyclerViewComments);
+        mTextViewRelativeTime =findViewById(R.id.textRelativeTime);
+        mTextViewLikes = findViewById(R.id.textLikes);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(PostDetailActivity.this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
@@ -102,10 +113,10 @@ FloatingActionButton mFabComment;
         mUserProvider = new UserProvider();
         mcommentsProvider = new CommentsProvider();
         mAuthProvider = new AuthProvider();
+        mLikesProvider = new LikesProvider();
 
         mExtraPostId = getIntent().getStringExtra("id");
 
-        getPost();
 
         mFabComment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,6 +139,23 @@ FloatingActionButton mFabComment;
             }
         });
 
+        getPost();
+        getNumberLikes();
+    }
+
+    private void getNumberLikes() {
+        mLikesProvider.getLikesByPost(mExtraPostId).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
+                int numberLikes = queryDocumentSnapshots.size();
+                if (numberLikes==1){
+                    mTextViewLikes.setText(numberLikes + "Me gusta");
+                }
+                else {
+                    mTextViewLikes.setText(numberLikes + "Me gustas");
+                }
+            }
+        });
     }
 
     @Override
@@ -283,6 +311,11 @@ else {
                     if(documentSnapshot.contains("idUsuario")){
                        midUser = documentSnapshot.getString("idUsuario");
                         getUserInfo(midUser);
+                    }
+                    if(documentSnapshot.contains("timestamp")){
+                      long  timestamp = documentSnapshot.getLong("timestamp");
+                      String relativeTime = RelativeTime.getTimeAgo(timestamp,PostDetailActivity.this);
+                      mTextViewRelativeTime.setText(relativeTime);
                     }
                     instanceSlider();
                 }
