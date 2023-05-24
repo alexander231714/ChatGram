@@ -4,6 +4,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -70,16 +71,15 @@ public class PostDetailActivity extends AppCompatActivity {
     ImageView mImageViewCategory;
     CircleImageView mCircleImageViewProfile;
     Button mButtonShowProfile;
-    CircleImageView mCircleImageViewBack;
     String midUser = "";
     CommentsProvider mcommentsProvider;
     AuthProvider mAuthProvider;
     RecyclerView mRecyclerView;
     CommentAdapter mAdapter;
-FloatingActionButton mFabComment;
-    TextView mTextViewRelativeTime;
-    TextView mTextViewLikes;
-   LikesProvider mLikesProvider;
+    FloatingActionButton mFabComment;
+    TextView mTextViewRelativeTime, mTextViewLikes;
+    LikesProvider mLikesProvider;
+    Toolbar mToolbar;
 
 
     @Override
@@ -100,11 +100,14 @@ FloatingActionButton mFabComment;
         mCircleImageViewProfile=findViewById(R.id.circleImageProfile);
 
         mButtonShowProfile=findViewById(R.id.btnShowProfile);
-        mCircleImageViewBack =findViewById(R.id.circleImageBack);
         mFabComment =findViewById(R.id.fabComment);
         mRecyclerView=findViewById(R.id.recyclerViewComments);
         mTextViewRelativeTime =findViewById(R.id.textRelativeTime);
         mTextViewLikes = findViewById(R.id.textLikes);
+        mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(PostDetailActivity.this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
@@ -125,12 +128,6 @@ FloatingActionButton mFabComment;
             }
         });
 
-        mCircleImageViewBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
         mButtonShowProfile.setOnClickListener(new View.OnClickListener() {
             @Override

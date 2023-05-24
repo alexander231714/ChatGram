@@ -2,14 +2,17 @@ package com.loschidos.chatgram.activities;
 
 import static java.security.AccessController.getContext;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,7 +40,6 @@ public class UserProfileActivity extends AppCompatActivity {
     TextView mTextViewUserName, mTextViewPhone, mTextViewEmail, mTextViewPost;
     ImageView mImageCover;
     CircleImageView mImageProfile;
-    CircleImageView mCircleImageViewBack;
     UserProvider mUserProvider;
     AuthProvider mAuthProvider;
     PostProvider mPostProvider;
@@ -45,6 +47,7 @@ public class UserProfileActivity extends AppCompatActivity {
     MyPostsAdapter mAdapter ;
     RecyclerView mRecyclerView;
     TextView mTextViewPostExist;
+    Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +62,10 @@ public class UserProfileActivity extends AppCompatActivity {
         mImageProfile = findViewById(R.id.CircleImageProfile);
         mTextViewPostExist = findViewById(R.id.textViewPostExist);
         mImageCover = findViewById(R.id.ImageViewCover);
-        mCircleImageViewBack =findViewById(R.id.circleImageBack);
+        mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mRecyclerView = findViewById(R.id.recyclerViewMyPost);
 
@@ -74,12 +80,7 @@ public class UserProfileActivity extends AppCompatActivity {
         mExtraidUser= getIntent().getStringExtra("IdUser");
 
 
-        mCircleImageViewBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+
         getUser();
         getPostNumber();
         checkIfExistPost();
@@ -181,4 +182,11 @@ public class UserProfileActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == android.R.id.home){
+            finish();
+        }
+        return true;
+    }
 }
