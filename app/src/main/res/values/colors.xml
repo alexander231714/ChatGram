@@ -17,4 +17,7 @@
     <color name="GrayLight">#E3E2E2</color>
     <color name="DarkBlue">#F1EFEF</color>
     <color name="gris">#595656</color>
+    <color name="colorBlue">#3C59FF</color>
+    <color name="colorred">#DC5348</color>
+    <color name="colorYellow">#F8DF62</color>
 </resources>

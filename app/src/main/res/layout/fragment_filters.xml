@@ -3,12 +3,168 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.FiltersFragment">
+    tools:context=".fragments.FiltersFragment"
+    android:layout_marginBottom="65dp"
+    >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="FRAGMENT FILTERS" />
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:orientation="vertical"
+       >
+       <androidx.cardview.widget.CardView
+           android:id="@+id/cardViewDeportes"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_weight="1"
+           android:layout_gravity="center_vertical"
+           android:elevation="3dp"
+           android:layout_marginHorizontal="15dp"
+           android:layout_marginTop="10dp"
+           >
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:orientation="horizontal"
+               android:layout_marginHorizontal="20dp"
+               >
+
+               <ImageView
+                   android:layout_width="100dp"
+                   android:layout_height="100dp"
+                   android:src="@drawable/deportes"
+                   android:background="@color/skyblue"
+                   android:padding="7dp"
+                   android:layout_gravity="center_vertical"
+                   />
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="match_parent"
+                   android:gravity="center_vertical"
+                   android:layout_marginLeft="20dp"
+                   android:textSize="20sp"
+                   android:textColor="@color/black"
+                   android:text="DEPORTES"/>
+           </LinearLayout>
+
+       </androidx.cardview.widget.CardView>
+
+       <androidx.cardview.widget.CardView
+           android:id="@+id/cardViewJuegos"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_weight="1"
+           android:layout_gravity="center_vertical"
+           android:elevation="3dp"
+           android:layout_marginHorizontal="15dp"
+           android:layout_marginTop="10dp"
+           >
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:orientation="horizontal"
+               android:layout_marginHorizontal="20dp"
+               >
+
+               <ImageView
+                   android:layout_width="100dp"
+                   android:layout_height="100dp"
+                   android:src="@drawable/juegos"
+                   android:background="@color/teal_200"
+                   android:padding="7dp"
+                   android:layout_gravity="center_vertical"
+                   />
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="match_parent"
+                   android:gravity="center_vertical"
+                   android:layout_marginLeft="20dp"
+                   android:textSize="20sp"
+                   android:textColor="@color/black"
+                   android:text="JUEGOS"/>
+           </LinearLayout>
+
+       </androidx.cardview.widget.CardView>
+
+       <androidx.cardview.widget.CardView
+           android:id="@+id/cardViewMusica"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_weight="1"
+           android:layout_gravity="center_vertical"
+           android:elevation="3dp"
+           android:layout_marginHorizontal="15dp"
+           android:layout_marginTop="10dp"
+           >
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:orientation="horizontal"
+               android:layout_marginHorizontal="20dp"
+               >
+
+               <ImageView
+                   android:layout_width="100dp"
+                   android:layout_height="100dp"
+                   android:src="@drawable/musica"
+                   android:background="@color/colorYellow"
+                   android:padding="7dp"
+                   android:layout_gravity="center_vertical"
+                   />
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="match_parent"
+                   android:gravity="center_vertical"
+                   android:layout_marginLeft="20dp"
+                   android:textSize="20sp"
+                   android:textColor="@color/black"
+                   android:text="MUSICA"/>
+           </LinearLayout>
+
+       </androidx.cardview.widget.CardView>
+
+       <androidx.cardview.widget.CardView
+           android:id="@+id/cardViewPeliculas"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_weight="1"
+           android:layout_gravity="center_vertical"
+           android:elevation="3dp"
+           android:layout_marginHorizontal="15dp"
+           android:layout_marginTop="10dp"
+           >
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:orientation="horizontal"
+               android:layout_marginHorizontal="20dp"
+               >
+
+               <ImageView
+                   android:layout_width="100dp"
+                   android:layout_height="100dp"
+                   android:src="@drawable/pelis"
+                   android:background="@color/colorred"
+                   android:padding="7dp"
+                   android:layout_gravity="center_vertical"
+                   />
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="match_parent"
+                   android:gravity="center_vertical"
+                   android:layout_marginLeft="20dp"
+                   android:textSize="20sp"
+                   android:textColor="@color/black"
+                   android:text="PELICULAS"/>
+           </LinearLayout>
+
+       </androidx.cardview.widget.CardView>
+
+
+   </LinearLayout>
 
 </FrameLayout>

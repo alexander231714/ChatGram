@@ -23,6 +23,10 @@ public class PostProvider {
         return mCollection.orderBy("timestamp", Query.Direction.DESCENDING);
     }
 
+    public Query getPostByCategoryAndTimeStamp(String categoria){
+        return mCollection.whereEqualTo("categoria", categoria).orderBy("timestamp", Query.Direction.DESCENDING);
+    }
+
     public Query getPostByUser(String id) {
         return mCollection.whereEqualTo("idUsuario",id);
     }
