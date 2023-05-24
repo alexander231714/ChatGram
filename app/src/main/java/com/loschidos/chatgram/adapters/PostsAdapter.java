@@ -40,6 +40,7 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Post, PostsAdapter.Vi
     UserProvider mUserProvider;
     LikesProvider mLikeProvider;
     AuthProvider mAuthProvider;
+    TextView mTextViewNumberFilter;
 
     public PostsAdapter(FirestoreRecyclerOptions<Post> options, Context context) {
         super(options);
@@ -48,12 +49,25 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Post, PostsAdapter.Vi
         mLikeProvider = new LikesProvider();
         mAuthProvider = new AuthProvider();
     }
+    public PostsAdapter(FirestoreRecyclerOptions<Post> options, Context context, TextView textView) {
+        super(options);
+        this.context = context;
+        mUserProvider = new UserProvider();
+        mLikeProvider = new LikesProvider();
+        mAuthProvider = new AuthProvider();
+        mTextViewNumberFilter = textView;
+    }
 
     @Override
     protected void onBindViewHolder(@NonNull final ViewHolder holder, int position, @NonNull final Post post) {
 
         DocumentSnapshot document = getSnapshots().getSnapshot(position);
         final String postId = document.getId();
+
+        if(mTextViewNumberFilter != null){
+            int numberFilter = getSnapshots().size();
+            mTextViewNumberFilter.setText(String.valueOf(numberFilter));
+        }
 
         holder.textViewTitle.setText(post.getTitulo().toUpperCase());
         holder.textViewDescription.setText(post.getDescripcion());

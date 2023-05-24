@@ -3,11 +3,13 @@ package com.loschidos.chatgram.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -25,6 +27,7 @@ public class FiltersActivity extends AppCompatActivity {
     PostsAdapter mPostsAdapter;
     String mExtraCategory;
     Toolbar mToolbar;
+    TextView mTextViewNumberFilter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,12 +36,14 @@ public class FiltersActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recyclerViewFilter);
 
         mToolbar = findViewById(R.id.toolbar);
+        mTextViewNumberFilter = findViewById(R.id.textViewNumberFilter);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Filtros");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(FiltersActivity.this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
+        //mRecyclerView.setLayoutManager(new GridLayoutManager(FiltersActivity.this, 2));
 
         mExtraCategory = getIntent().getStringExtra("categoria");
         mAuthProvider = new AuthProvider();
@@ -55,7 +60,7 @@ public class FiltersActivity extends AppCompatActivity {
                         .setQuery(query, Post.class )
                         .build();
 
-        mPostsAdapter = new PostsAdapter(options, FiltersActivity.this);
+        mPostsAdapter = new PostsAdapter(options, FiltersActivity.this, mTextViewNumberFilter);
         mRecyclerView.setAdapter(mPostsAdapter);
         mPostsAdapter.startListening();
     }
