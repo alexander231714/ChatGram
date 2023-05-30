@@ -44,8 +44,6 @@ public class MainActivity extends AppCompatActivity {
     UserProvider mUserProvider;
     AlertDialog mDialog;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,7 +139,8 @@ public class MainActivity extends AppCompatActivity {
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(MainActivity.this, "No se puedo iniciar con Google", Toast.LENGTH_SHORT).show();
                         }
-                });
+        });
+        mAuthProvider.logout();
     }
 
     //Verificamos si el usuario existe
@@ -192,8 +191,14 @@ public class MainActivity extends AppCompatActivity {
     // [START signin]
     /*dispara todo el proceso de autenticacion con google*/
     private void signInGoogle() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        mGoogleSignInClient.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                // Continúa con el proceso de inicio de sesión
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent, RC_SIGN_IN);
+            }
+        });
     }
 
     private void login() {
