@@ -102,11 +102,10 @@
                     android:id="@+id/textInputTelefono"
                     android:layout_width="488dp"
                     android:layout_height="wrap_content"
-                    android:hint="Teléfono"
-                    android:inputType="phone"
-                    android:background="@color/white"
                     android:autofillHints="false"
-                    />
+                    android:background="@color/white"
+                    android:hint="Teléfono"
+                    android:inputType="phone" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 

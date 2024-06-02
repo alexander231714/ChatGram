@@ -43,11 +43,11 @@ public class HomeActivity extends AppCompatActivity {
                         // FRAGMENT HOME
                         openFragment(new HomeFragment());
                     }
-                    else if (item.getItemId() == R.id.itemChats) {
+                  //  else if (item.getItemId() == R.id.itemChats) {
                         // FRAGMENT CHATS
-                        openFragment(new ChatsFragment());
+                     //   openFragment(new ChatsFragment());
 
-                    }
+                   // }
                     else if (item.getItemId() == R.id.itemFilters) {
                         // FRAGMENT FILTROS
                         openFragment(new FiltersFragment());

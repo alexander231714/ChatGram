@@ -136,8 +136,8 @@ public class EditProfileActivity extends AppCompatActivity {
                         mTextInputUsername.setText(mUsername);
                     }
 
-                    if (documentSnapshot.contains("phone")){
-                        mPhone = documentSnapshot.getString("phone");
+                    if (documentSnapshot.contains("telefono")){
+                        mPhone = documentSnapshot.getString("telefono");
                         mTextInputPhone.setText(mPhone);
                     }
 
