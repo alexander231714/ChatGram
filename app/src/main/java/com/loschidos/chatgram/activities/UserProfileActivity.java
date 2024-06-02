@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -79,8 +80,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
         mExtraidUser= getIntent().getStringExtra("IdUser");
 
-
-
         getUser();
         getPostNumber();
         checkIfExistPost();
@@ -110,17 +109,30 @@ public class UserProfileActivity extends AppCompatActivity {
         mPostProvider.getPostByUser(mExtraidUser).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
-                int numberPost = queryDocumentSnapshots.size();
-                if(numberPost >0){
-                    mTextViewPostExist.setText("Publicaciones ");
-                    mTextViewPostExist.setTextColor(Color.BLUE);
-                }else {
+                if (error != null) {
+                    Log.e("Firestore Error", error.getMessage());
+                    return;
+                }
+
+                if (queryDocumentSnapshots != null) {
+                    int numberPost = queryDocumentSnapshots.size();
+                    if (numberPost > 0) {
+                        mTextViewPostExist.setText("Publicaciones ");
+                        mTextViewPostExist.setTextColor(Color.BLUE);
+                    } else {
+                        mTextViewPostExist.setText("No hay Publicaciones ");
+                        mTextViewPostExist.setTextColor(Color.GRAY);
+                    }
+                } else {
+                    Log.e("Null Snapshot", "queryDocumentSnapshots is null");
+                    // Handle the null case, for example, by showing a message or setting default values
                     mTextViewPostExist.setText("No hay Publicaciones ");
                     mTextViewPostExist.setTextColor(Color.GRAY);
                 }
             }
         });
     }
+
 
     private void getPostNumber(){
         mPostProvider.getPostByUser(mExtraidUser).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {

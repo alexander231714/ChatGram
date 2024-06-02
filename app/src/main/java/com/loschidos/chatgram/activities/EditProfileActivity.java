@@ -165,53 +165,52 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void clickEditProfile() {
-        mUsername=mTextInputUsername.getText().toString();
-        mPhone=mTextInputPhone.getText().toString();
-        if(!mUsername.isEmpty() && !mPhone.isEmpty()){
-            if (mImgFile1 != null && mImgFile2 !=null) {
+        mUsername = mTextInputUsername.getText().toString();
+        mPhone = mTextInputPhone.getText().toString();
+
+        if (!mUsername.isEmpty() && !mPhone.isEmpty()) {
+            if (mImgFile1 != null && mImgFile2 != null) {
                 SaveImg(mImgFile1, mImgFile2);
             }
-            //Selecciono ambas fotos de camara
-            else if (mPhotoFile != null && mPhotoFile2 != null){
+            // Seleccionó ambas fotos de cámara
+            else if (mPhotoFile != null && mPhotoFile2 != null) {
                 SaveImg(mPhotoFile, mPhotoFile2);
             }
-            //Selecciono una foto de galeria y la otra de la camara
-            else if (mImgFile1 != null && mPhotoFile2 != null){
+            // Seleccionó una foto de galería y la otra de la cámara
+            else if (mImgFile1 != null && mPhotoFile2 != null) {
                 SaveImg(mImgFile1, mPhotoFile2);
             }
-            //Selecciono foto de la camara y la otra de galeria
-            else if (mPhotoFile != null && mImgFile2 != null){
+            // Seleccionó foto de la cámara y la otra de galería
+            else if (mPhotoFile != null && mImgFile2 != null) {
                 SaveImg(mPhotoFile, mImgFile2);
             }
-
             else if (mPhotoFile != null) {
-                saveImage(mPhotoFile,  true);
+                saveImage(mPhotoFile, true);
             }
-
             else if (mPhotoFile2 != null) {
-                saveImage(mPhotoFile2,  true);
+                saveImage(mPhotoFile2, false);
             }
-
             else if (mImgFile1 != null) {
-                saveImage(mImgFile1,  true);
+                saveImage(mImgFile1, true);
             }
-
             else if (mImgFile2 != null) {
-                saveImage(mImgFile2,  false);
+                saveImage(mImgFile2, false);
             }
-
             else {
-
-                User user=new User();
+                User user = new User();
                 user.setUsername(mUsername);
                 user.setTelefono(mPhone);
                 user.setId(mAuthProvider.getUid());
+                // Conservar las URLs actuales de las imágenes si no se han actualizado
+                user.setImageProfile(mImageProfile);
+                user.setImageCover(mImageCover);
                 UpdateInfo(user);
             }
-        }else {
-            Toast.makeText(this, "Ingrese el nombre de usuario y telefono", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Ingrese el nombre de usuario y teléfono", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private void SaveImg(File imageFile1, File imageFile2) {
         mDialog.show();

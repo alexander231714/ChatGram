@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -144,16 +145,27 @@ public class PostDetailActivity extends AppCompatActivity {
         mLikesProvider.getLikesByPost(mExtraPostId).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException error) {
-                int numberLikes = queryDocumentSnapshots.size();
-                if (numberLikes==1){
-                    mTextViewLikes.setText(numberLikes + " Me gusta");
+                if (error != null) {
+                    // Log the error and return to avoid further processing
+                    Log.e("Firestore Error", error.getMessage());
+                    return;
                 }
-                else {
-                    mTextViewLikes.setText(numberLikes + " Me gustas");
+
+                if (queryDocumentSnapshots != null) {
+                    int numberLikes = queryDocumentSnapshots.size();
+                    if (numberLikes == 1) {
+                        mTextViewLikes.setText(numberLikes + " Me gusta");
+                    } else {
+                        mTextViewLikes.setText(numberLikes + " Me gustas");
+                    }
+                } else {
+                    // Handle the null snapshot case
+                    Log.e("Null Snapshot", "queryDocumentSnapshots is null");
                 }
             }
         });
     }
+
 
     @Override
     protected void onStart() {

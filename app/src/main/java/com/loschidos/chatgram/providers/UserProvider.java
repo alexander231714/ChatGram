@@ -35,5 +35,7 @@ public class UserProvider {
         map.put("image_cover", user.getImageCover());
         return mCollection.document(user.getId()).update(map);
     }
-
+    public Task<Void> updateUser(String userId, Map<String, Object> updates) {
+        return mCollection.document(userId).update(updates);
+    }
 }
